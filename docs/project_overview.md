@@ -11,6 +11,7 @@ Because of these drawbacks to the common workflow, we propose an iPython noteboo
 ## Main components
 To understand how we plan on solving these issues, we first must explain what the underlying system would look like, and how the user will interact with it.
  - **Block** —
+ - **Filter** —
  - **DAG** — 
 
 ## Mechanics
