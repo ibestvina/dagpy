@@ -10,8 +10,23 @@ Because of these drawbacks to the common workflow, we propose an iPython noteboo
 
 ## Main components
 To understand how we plan on solving these issues, we first must explain what the underlying system would look like, and how the user will interact with it.
- - **Block** —
- - **Filter** —
- - **DAG** — 
+ - **Block** — sequence of iPython notebook cells of any type, together with their outputs.
+ - **Filter** — special block wich filters out the data passed from one block to another. Filter can be turned off, in which case the whole interpreter session state is passed. Optionally, some of the filtered objects can be cached.
+ - **DAG** — directed acyclic graph of blocks, where a connection A <- B denotes a dependency of block B to block A. 
 
 ## Mechanics
+
+
+## Milestones
+1. Basic DAG executor and DAG manager functionality
+    * add block
+    * notebook view of the block and its dependencies
+    * block update on notebook change
+    * execute all blocks
+    * update blocks affected by block changes 
+ 
+2. DAG execution scheduling and trigger mechanics
+
+3. DAG visualizer GUI
+
+4. DAG interaction GUI
