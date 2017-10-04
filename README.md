@@ -4,7 +4,7 @@ DAGpy is a data science collaboration tool based on iPython notebooks enabling d
  - easily collaborate by branching out of others' notebooks
  - minimize code duplication
  - give a clean overview of the project
- - cache intermediate outputs so team members can use them without evaluation
+ - cache intermediate outputs so team members can use them without re-evaluation
  - automate the process of code execution upon data changes or on schedule
  - provide a clean interface to the data visualization dashboard designers and developers
 
