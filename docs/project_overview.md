@@ -18,6 +18,9 @@ Each block is saved as ipynb file. Apart from those, project consists of a DAG f
 
 
 ## Mechanics
+This section descibes the current state of the DAGpy mechanics. It will be updated as the project develops and the mechanics change (as described in the Milestones).
+
+DAGpy consists of two subsystems: DAG manager and DAG executor. **DAG manager** deals with the block creation and editing, DAG parsing and editing, DAG change tracking (i.e. answering the question "Which blocks should be re-executed?"), and cache files managing. DAG manager also serves the notebooks built from some block and its dependenices to users. **DAG executor** executes the DAG or its subset (on request, schedule or trigger), automatically paralellizing DAG branches when possible, and managing block communication (first trivially through files, later through MPI).
 
 
 ## Milestones
