@@ -35,3 +35,4 @@ When users request some flow to change its blocks or add new blocks to it, they 
 Cache files hold raw binaries of python objects serialized using the Dill library. Their naming convention is <block_id>\_<var_name>.dill.
 
 ### Flow notebooks
+Flow notebooks are built by concatenating blocks, without their ipynb metadata, delimited by the delimiter blocks described earlier. DAG subgraph from which the flow notebooks is built is linearized in a BFS fashion.
