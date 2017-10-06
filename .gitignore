@@ -1,2 +1,4 @@
 # pycharm
 src/.idea/
+src/__pycache__
+*/.ipynb_checkpoints

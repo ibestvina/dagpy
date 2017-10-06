@@ -2,15 +2,13 @@ import subprocess
 import time
 import json
 
-# save dict d to file f as json if it was changed and return True. If unchanged, return False
+# save dict to file as json if it was changed and return True. If unchanged, return False
 def dict_to_json_file(d, fpath):
-    with open(fpath) as f:
-        fd = json.load(f)
+    fd = json.load(open(fpath))
     if d == fd:
         return False
-    with open(fpath, 'w') as f:
-        json.dump(d, f)
-        return True
+    json.dump(d, open(fpath, 'w'))
+    return True
 
 def invert_dict(d):
     values = set(val for val_list in d.values() for val in val_list).union(d.keys())
@@ -44,7 +42,7 @@ class Console_executor:
         return retval
 
 
-def block_filename(dag_id, block_id):
+def default_block_filename(dag_id, block_id):
     return '{0}_{1}.ipynb'.format(dag_id, block_id)
 
 

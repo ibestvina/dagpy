@@ -1,16 +1,19 @@
 import utils
-import os.path
-
+import json
 
 class DAG:
-    def from_file(file):
-        pass
+        
+    def __init__(self, dag_dict):
+        self._dag_dict = dag_dict
+        self._parents = {}
+        for block_id, block in dag_dict['blocks'].items():
+            self._parents[block_id] = block['parents']
+        self._children = utils.invert_dict(self._parents)
 
-    def __init__(self, parents, dag_id):
-        # self._blocks = list(parents)
-        self.id = dag_id
-        self._parents = parents
-        self._children = utils.invert_dict(parents)
+    def block_cnt(self):
+        return len(self._dag_dict['blocks'])
+
+    def get_id(self): return self._dag_dict['id']
 
     def parents_of(self, block_id):
         if block_id not in self._parents:
@@ -22,40 +25,27 @@ class DAG:
             return []
         return self._children[block_id]
 
+    def add_block(self, block_id, block):
+        self._dag_dict['blocks']['block_id'] = block
+        parents = block['parents']
+        self._parents[block_id] = parents
+        for parent in parents:
+            self._children[parent].append(block_id)
 
-class DAG_executor:
-    def __init__(self, dag, blocks_path):
-        self._dag = dag
-        self._blocks_path = blocks_path
-        self._cex = utils.Console_executor()
+    def remove_block(self, block_id):
+        block = self._dag_dict['blocks'][block_id]
+        for d in [self._parents, self._children]:
+            del(d[block_id])
+            for key in d.keys(): d[key].remove(block_id)
+        del(self._dag_dict['blocks'][block_id])
 
-    def _run_ipynb_command(self, block_id):
-        filename = utils.block_filename(self._dag.id, block_id)
-        filepath = os.path.join(self._blocks_path, filename)
-        return 'jupyter nbconvert --to notebook --execute ' + filepath
+    def block_filename(self, block_id):
+        return self._dag_dict['blocks'][block_id]['file']
 
-    def _execute_block(self, block_id):
-        command = self._run_ipynb_command(block_id)
-        print(command)
-        self._cex.run(command, block_id)
+    def to_file(self, fpath):
+        return utils.dict_to_json_file(self._dag_dict, fpath)
 
-    def execute_blocks(self, block_ids):
-        pending_to_execute = utils.all_dependencies(self._dag, block_ids)
-        pending_parents_cnt = {block_id: len(self._dag.parents_of(block_id)) for block_id in pending_to_execute}
-
-        while pending_to_execute or self._cex.run_cnt():
-            print('pending', pending_to_execute)
-            print('parent_cnt', pending_parents_cnt)
-            print('running', self._cex.run_cnt())
-            execute_now = [block_id for block_id in pending_to_execute if not pending_parents_cnt[block_id]]
-            for block_id in execute_now:
-                pending_to_execute.remove(block_id)
-                self._execute_block(block_id)
-            
-            if self._cex.run_cnt():
-                retval = self._cex.blocking_poll(0.1)
-                if retval['retcode'] != 0:
-                    print('Error executing block', retval['proc_id'])
-                    print('Execution output:\n', retval['output'].read())
-                for child_id in self._dag.children_of(retval['proc_id']):
-                    pending_parents_cnt[child_id] -= 1
+    @staticmethod
+    def from_file(fpath):
+        dag_dict = json.load(open(fpath))
+        return DAG(dag_dict)
