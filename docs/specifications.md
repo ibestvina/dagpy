@@ -9,7 +9,7 @@ DAG file is a JSON consisting of two parts: a dictionary of blocks indexed by th
  - description – optional description of the block
  - last_executed – datetime of the last time the block was executed. This is compared to the last time the block file was changed, to determine if it needs to be re-executed.
  - parents – list of block ids
- - blockfile – full path to the ipynb file holding this block
+ - file – relative path (from the DAG file) to the ipynb file holding this block
  
 Other, optional fields include:
  - creator_user_id
