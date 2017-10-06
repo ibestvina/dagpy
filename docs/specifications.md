@@ -4,13 +4,12 @@
 Blocks are saved as iPy notebook files which are internally saved as JSON. Our only addition is in the notebook metadata (which iPython will not overwrite on notebook edits), where we save the block id and a list of variables which are passed on through the filter. We do not save any other data in the notebook file, because we use its last-change datetime as an indicator if it needs to be re-executed. If block names or other attributes where saved here as well, their changes would trigger the re-execution.
 
 ### DAG file
-DAG file is a JSON consisting of two parts: a list of blocks and project properties. Each block in the list has the following fields:
- - id
- - name – a name which the user sets, and by which it refers to this block (when specifying dependencies or executing blocks). Block names are not case-sensitive and must be unique.
+DAG file is a JSON consisting of two parts: a dictionary of blocks indexed by their id, and project properties. Each block in the dictionary has the following fields:
+ - name – a name which the user sets, and by which it refers to this block when specifying block parents or executing blocks. Block names are not case-sensitive and must be unique.
  - description – optional description of the block
  - last_executed – datetime of the last time the block was executed. This is compared to the last time the block file was changed, to determine if it needs to be re-executed.
- - dependencies – list of block ids
- - blockfile – full path to the ipynb file holding this block
+ - parents – list of block ids
+ - file – relative path (from the DAG file) to the ipynb file holding this block
  
 Other, optional fields include:
  - creator_user_id
@@ -29,7 +28,7 @@ When users request some flow to change its blocks or add new blocks to it, they 
  - Each attribute name is written as one line of markdown heading text, using any heading level. In other words, each attribute name is a line which starts with '\#' sign, and all the other '\#' signs are ignored. Attribute names are not case-sensitive.
  - Attribute value is specified in the following lines, until a new attribute name is introduced, or until the end of the cell.
  - If the attribute value cannot hold newlines or whitespaces, these are ignored.
- - List attribute values (such as block dependencies) can be delimited with commas, whitespaces and new lines.
+ - List attribute values (such as block parents) can be delimited with commas, whitespaces and new lines.
 
 ### Cache files
 Cache files hold raw binaries of python objects serialized using the Dill library. Their naming convention is <block_id>\_<var_name>.dill.
