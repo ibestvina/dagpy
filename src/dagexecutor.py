@@ -40,4 +40,4 @@ class DAGExecutor:
                     print('Error executing block', retval['proc_id'])
                     print('Execution output:\n', retval['output'].read())
                 for child_id in self._dag.children_of(retval['proc_id']):
-                    pending_parents_cnt[child_id] -= 1
+                    if child_id in pending_parents_cnt: pending_parents_cnt[child_id] -= 1

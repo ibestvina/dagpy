@@ -59,3 +59,15 @@ def all_dependencies(dag, block_ids):
             return result
         pending = next_pending
 
+def linearize_dependencies(dag, block_ids):
+    pending = all_dependencies(dag, block_ids)
+    pending_parents_cnt = {block_id: len(dag.parents_of(block_id)) for block_id in pending}
+    result = []
+    while pending:
+        add_now = [block_id for block_id in pending if not pending_parents_cnt[block_id]]
+        result += add_now
+        pending.difference_update(add_now)
+        for block_id in add_now:
+            for child_id in dag.children_of(block_id):
+                if child_id in pending_parents_cnt: pending_parents_cnt[child_id] -= 1
+    return result
