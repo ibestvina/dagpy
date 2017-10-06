@@ -11,9 +11,9 @@ class DAGExecutor:
 
     def _run_ipynb_command(self, block_id):
         #filename = utils.block_filename(self._dag.get_id(), block_id)
-        filename = self._dag.block_filename(block_id)
-        filepath = os.path.join(self._path, filename)
-        return 'jupyter nbconvert --ExecutePreprocessor.timeout=-1 --execute --inplace ' + filepath
+        fname = self._dag.block_filename(block_id)
+        fpathname = os.path.join(self._path, fname)
+        return 'jupyter nbconvert --ExecutePreprocessor.timeout=-1 --execute --inplace ' + fpathname
 
     def _execute_block(self, block_id):
         command = self._run_ipynb_command(block_id)

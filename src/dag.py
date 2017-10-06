@@ -46,6 +46,6 @@ class DAG:
         return utils.dict_to_json_file(self._dag_dict, fpath)
 
     @staticmethod
-    def from_file(fpath):
-        dag_dict = json.load(open(fpath))
+    def from_file(fpathname):
+        dag_dict = json.load(open(fpathname))
         return DAG(dag_dict)
