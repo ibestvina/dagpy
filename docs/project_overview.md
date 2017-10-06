@@ -13,7 +13,7 @@ To understand how we plan on solving these issues, we first must explain what th
  - **Block** — sequence of iPython notebook cells of any type, together with their outputs.
  - **Filter** — special block which filters and caches out the data passed from one block to another. Filter can be turned off, in which case the whole interpreter session state is passed. Eventually, users would be able to choose which filtered elements are cached (see Milestones).
  - **DAG** — directed acyclic graph of blocks, where a connection A <- B denotes a dependency of block B to block A.
- - **Flow** — a sequence of blocks consisting of one or more end-blocks and all of their dependencies, served to the user in the form of an iPy notebook with the intention of adding additional blocks dependent on the end-blocks. See Mechanics for an example.
+ - **Flow** — a sequence of blocks consisting of one or more end-blocks and all of their dependencies, served to the user in the form of an iPy notebook with the intention of adding additional blocks dependent on the end-blocks and editing the already present ones. See Mechanics for an example.
  
 Each block is saved as ipynb file. Apart from those, project consists of a DAG file, where DAG and other project metadata is saved, and cache files produced by filters. Users can choose whether to only save the most recent versions of cached objects (presumably because previous versions are managed by VC systems), or to save the _n_ most recent ones.
 
