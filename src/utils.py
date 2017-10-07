@@ -20,7 +20,8 @@ class Console_executor:
         self._running_procs = []
 
     def run(self, command, proc_id):
-        self._running_procs.append((subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE), proc_id))
+        print(command)
+        self._running_procs.append((subprocess.Popen(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE), proc_id))
 
     def run_cnt(self):
         return len(self._running_procs)
@@ -37,6 +38,7 @@ class Console_executor:
     def blocking_poll(self, time_step=0.1):
         retval = self.poll()
         while retval is None:
+            print('waiting')
             time.sleep(time_step)
             retval = self.poll()
         return retval

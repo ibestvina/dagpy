@@ -3,9 +3,11 @@ import utils
 import dagexecutor
 import flowmanager
 
-dagpy_filepath = 'playground/dag_example_1.txt'
 
-mydag = dag.DAG.from_file(dagpy_filepath)
+dag_filepath = 'playground/dag_example_1.txt'
+
+mydag = dag.DAG.from_file(dag_filepath)
+print(mydag._dag_dict)
 #print(utils.linearize_dependencies(mydag, ['B']))
 
 #mydagex = dagexecutor.DAGExecutor(mydag, '')
@@ -16,4 +18,6 @@ mydag = dag.DAG.from_file(dagpy_filepath)
 
 myflowmng = flowmanager.FlowManager(mydag, '')
 myflowmng.apply_flow_changes('merged.ipynb')
-print(mydag._dag_dict)
+
+
+

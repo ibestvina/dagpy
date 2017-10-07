@@ -22,15 +22,19 @@ class DAG:
     def get_id(self): return self._dag_dict['id']
 
     def get_block_att(self, block_id, att_name, default = None):
-        if block_id not in self._dag_dict['blocks']:
-            print('[DAG] Block id', block_id, 'does not exist')
-            return None
-        if att_name not in self._dag_dict['blocks'][block_id]:
+        block_meta =  self.get_block_metadata(block_id)
+        if att_name not in block_meta:
             if default is not None:
                 return default
             print('[DAG] Block id', block_id, 'does not contain', att_name)
             return None
-        return self._dag_dict['blocks'][block_id][att_name]
+        return block_meta[att_name]
+
+    def get_block_metadata(self, block_id):
+        if block_id not in self._dag_dict['blocks']:
+            print('[DAG] Block id', block_id, 'does not exist')
+            return None
+        return self._dag_dict['blocks'][block_id]
 
     def parents_of(self, block_id):
         if block_id not in self._parents:
