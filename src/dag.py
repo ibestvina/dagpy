@@ -1,15 +1,18 @@
 import utils
 import json
 
+
 class DAG:
-        
+
+    block_attributes = ['block_id', 'parents', 'description', 'file', 'filter']
+
     def __init__(self, dag_dict):
         self._dag_dict = dag_dict
         self._reset_parents_and_children()
 
     def _reset_parents_and_children(self):
         self._parents = {}
-        for block_id, block in dag_dict['blocks'].items():
+        for block_id, block in self._dag_dict['blocks'].items():
             self._parents[block_id] = block['parents']
         self._children = utils.invert_dict(self._parents)
 
@@ -17,6 +20,17 @@ class DAG:
         return len(self._dag_dict['blocks'])
 
     def get_id(self): return self._dag_dict['id']
+
+    def get_block_att(self, block_id, att_name, default = None):
+        if block_id not in self._dag_dict['blocks']:
+            print('[DAG] Block id', block_id, 'does not exist')
+            return None
+        if att_name not in self._dag_dict['blocks'][block_id]:
+            if default is not None:
+                return default
+            print('[DAG] Block id', block_id, 'does not contain', att_name)
+            return None
+        return self._dag_dict['blocks'][block_id][att_name]
 
     def parents_of(self, block_id):
         if block_id not in self._parents:
@@ -46,7 +60,17 @@ class DAG:
     def to_file(self, fpath):
         return utils.dict_to_json_file(self._dag_dict, fpath)
 
-    def update_block(self, block_id, block_nb, block_dict):
+    def update_blocks(self, blocks_meta):
+        for block_meta in blocks_meta:
+             self.update_block(block_meta, recalculate_support = False)
+        self._reset_parents_and_children()
+
+    def update_block(self, block_meta, recalculate_support = True):
+        block_id = block_meta['block_id']
+        for block_att in DAG.block_attributes:
+            self._dag_dict['blocks'][block_id][block_att] = block_meta[block_att]
+        if recalculate_support:
+            self._reset_parents_and_children()
 
 
     @staticmethod

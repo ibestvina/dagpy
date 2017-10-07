@@ -24,10 +24,8 @@ class DAGExecutor:
         pending_to_execute = utils.all_dependencies(self._dag, block_ids)
         pending_parents_cnt = {block_id: len(self._dag.parents_of(block_id)) for block_id in pending_to_execute}
         block_cnt = self._dag.block_cnt()
+
         while pending_to_execute or self._cex.run_cnt():
-            # print('pending', pending_to_execute)
-            # print('parent_cnt', pending_parents_cnt)
-            # print('running', self._cex.run_cnt())
             print('Executed {}/{} blocks'.format(block_cnt - len(pending_to_execute), block_cnt))
             execute_now = [block_id for block_id in pending_to_execute if not pending_parents_cnt[block_id]]
             for block_id in execute_now:

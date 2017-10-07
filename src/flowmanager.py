@@ -1,12 +1,18 @@
 import utils
+import blockio
+
 import dag
 import os
+import re
 
 import nbformat
 from nbformat.v4 import new_markdown_cell, new_notebook
 
 class FlowManager:
-    TITLE_BLOCK_ID = '_dagpy_title_block'
+
+    TITLE_BLOCK_TYPE = 'title'
+    DELIMITER_BLOCK_TYPE = 'delimiter'
+
 
     def __init__(self, dag, path):
         self._dag = dag
@@ -23,15 +29,19 @@ class FlowManager:
         return self.read_nb(fpathname)
 
     def _delimiter_cell(self, block_id):
-        source = '### Block_id\n' + str(block_id)
-        source += '#### Parents\n' + '\n'.join(self._dag.parents_of(block_id))
-        return new_markdown_cell(source=source, metadata={'dagpy': {'block_id': block_id}})
+        source = '### Block_id\n' + str(block_id) + '\n'
+        source += '##### Description\n' + self._dag.get_block_att(block_id, 'description', default='') + '\n'
+        source += '##### Parents\n' + ', '.join(self._dag.get_block_att(block_id, 'parents', default='')) + '\n'
+        source += '##### Filter\n' + ', '.join(self._dag.get_block_att(block_id, 'filter', default='')) + '\n'
+        source += '##### File\n' + self._dag.get_block_att(block_id, 'file', default='')
+
+        return new_markdown_cell(source=source, metadata={'dagpy': {'cell_type': FlowManager.DELIMITER_BLOCK_TYPE, 'block_id': block_id}})
 
     def _create_notebook(self):
-        title_cell = new_markdown_cell(source='## DAGpy Flow notebook', metadata={'dagpy': {'block_id': TITLE_BLOCK_ID}})
+        title_cell = new_markdown_cell(source='## DAGpy Flow notebook', metadata={'dagpy': {'cell_type': FlowManager.TITLE_BLOCK_TYPE}})
         return new_notebook(cells=[title_cell])
 
-    def merge_notebooks(self, block_ids):
+    def merge_blocks(self, block_ids):
         merged = self._create_notebook()
         for block_id in block_ids:
             nb = self._read_block_nb(block_id)
@@ -42,29 +52,65 @@ class FlowManager:
 
     def flow_to_file(self, block_ids, filepathname):
         block_ids_linearized = utils.linearize_dependencies(self._dag, block_ids)
-        nb = self.merge_notebooks(block_ids_linearized)
+        nb = self.merge_blocks(block_ids_linearized)
         nbformat.write(nb, filepathname)
 
-    """
+
     @staticmethod
-    def parse_dagpy_cell():
-        return {}
+    def parse_delimiter_cell_att(att_name, lines):
+        if att_name == 'block_id':
+            return re.sub( '\s+', '', ''.join(lines))
+        if att_name == 'description':
+            return '\n'.join(lines)
+        if att_name == 'file':
+            return ''.join([line.strip() for line in lines])
+        if att_name in ['parents', 'filter']:
+            return re.sub( '[,\s]+', ' ', ' '.join(lines)).split(' ')
+
+
+    @staticmethod
+    def parse_delimiter_cell(cell):
+        block_meta = {'block_id': cell.metadata['dagpy']['block_id']}
+        lines = cell.source.splitlines()
+        att_name = None
+        att_lines = []
+        for line in lines:  
+            if line and line[0] == '#':
+                if att_name:
+                    block_meta[att_name] = FlowManager.parse_delimiter_cell_att(att_name, att_lines)
+                    if block_meta['block_id'] != cell.metadata['dagpy']['block_id']:
+                        # user has changed the block id
+                        # TODO: Decide if block_id can be changed in flow. Probably not.
+                        block_meta['block_id'] = cell.metadata['dagpy']['block_id']
+                att_name = re.sub( '[#\s]+', '', line).strip().lower()
+                att_lines = []
+            elif att_name:
+                att_lines += [line]
+        if att_name:
+            block_meta[att_name] = FlowManager.parse_delimiter_cell_att(att_name, att_lines)
+        return block_meta
+
 
     def apply_flow_changes(self, filepathname):
-        nb = read_nb(filepathname)
-        blocks = []
-        block_nb = None
-        while nb.cells:
-            cell = nb.cells.pop(0)
+        cells = self.read_nb(filepathname).cells
+        block_cells = []
+        block_meta = {}
+        blocks_meta = []
+        for cell in cells:
             if 'dagpy' in cell.metadata:
-                if block_nb is None:
-                    block_nb = new_notebook(cells = [cell])
-                    continue
-                block_id = cell.metadata['dagpy']['block_id']
-                if block_id != TITLE_BLOCK_ID:
-                    block_dict = parse_dagpy_cell(cell)
-                    self._dag.update_block(block_id, block_nb, block_dict)
-                block_nb = new_notebook()
-            else
-                block_nb.cells.append(cell)
-    """
+                if cell.metadata['dagpy']['cell_type'] == FlowManager.DELIMITER_BLOCK_TYPE:  # title cell is ignored
+                    if block_meta:
+                        blocks_meta += [block_meta]
+                        blockio.save_block(block_meta, block_cells)
+                        block_cells = []
+                    block_meta = FlowManager.parse_delimiter_cell(cell)
+            else:
+                block_cells += [cell]
+
+        if block_meta:
+            blocks_meta += [block_meta]
+            blockio.save_block(block_meta, block_cells)
+
+        if blocks_meta:
+            self._dag.update_blocks(blocks_meta)
+

@@ -10,5 +10,10 @@ mydag = dag.DAG.from_file(dagpy_filepath)
 
 #mydagex = dagexecutor.DAGExecutor(mydag, '')
 #mydagex.execute_blocks(['D'])
+
+#myflowmng = flowmanager.FlowManager(mydag, '')
+#nb = myflowmng.flow_to_file(['D'], 'merged.ipynb')
+
 myflowmng = flowmanager.FlowManager(mydag, '')
-nb = myflowmng.flow_to_file(['D'], 'merged.ipynb')
+myflowmng.apply_flow_changes('merged.ipynb')
+print(mydag._dag_dict)
