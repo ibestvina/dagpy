@@ -25,7 +25,7 @@ class FlowManager:
         return self.read_nb(fpathname)
 
     def _header_cell(self):
-        source = open("header.cell").read()
+        source = open("header_cell.py").read()
         return new_code_cell(source = source, metadata = {'dagpy': {'cell_type': blockio.HEADER_CELL_TYPE}})
 
     def _delimiter_cell(self, block_id):
@@ -69,7 +69,7 @@ class FlowManager:
 
     @staticmethod
     def parse_delimiter_cell(cell):
-        block_meta = {'block_id': cell.metadata['dagpy']['block_id']}
+        block_meta = {}
         lines = cell.source.splitlines()
         att_name = None
         att_lines = []
@@ -77,16 +77,28 @@ class FlowManager:
             if line and line[0] == '#':
                 if att_name:
                     block_meta[att_name] = FlowManager.parse_delimiter_cell_att(att_name, att_lines)
-                    if block_meta['block_id'] != cell.metadata['dagpy']['block_id']:
-                        # user has changed the block id
-                        # TODO: Decide if block_id can be changed in flow. Probably not.
-                        block_meta['block_id'] = cell.metadata['dagpy']['block_id']
+
                 att_name = re.sub( '[#\s]+', '', line).strip().lower()
                 att_lines = []
             elif att_name:
                 att_lines += [line]
         if att_name:
             block_meta[att_name] = FlowManager.parse_delimiter_cell_att(att_name, att_lines)
+
+        if 'block_id' in cell.metadata['dagpy']:
+            # preexisting block
+            if 'block_id' in block_meta and block_meta['block_id'] != cell.metadata['dagpy']['block_id']:
+                # user has changed the block id
+                # TODO: Decide if block_id can be changed in flow. Probably not.
+                block_meta['block_id'] = cell.metadata['dagpy']['block_id']
+            else:
+                block_meta['block_id'] = cell.metadata['dagpy']['block_id']
+        else:
+            # new block
+            if 'block_id' not in block_meta:
+                print('ERROR: no block_id specified')
+                block_meta['block_id'] = 'new_block'
+        
         return block_meta
 
 
