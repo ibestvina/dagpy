@@ -16,6 +16,9 @@ class DAG:
             self._parents[block_id] = block['parents']
         self._children = utils.invert_dict(self._parents)
 
+    def block_ids(self):
+        return self._dag_dict['blocks']
+
     def block_cnt(self):
         return len(self._dag_dict['blocks'])
 

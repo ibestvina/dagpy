@@ -73,3 +73,49 @@ def linearize_dependencies(dag, block_ids):
             for child_id in dag.children_of(block_id):
                 if child_id in pending_parents_cnt: pending_parents_cnt[child_id] -= 1
     return result
+
+
+def dag_draw(dag, block_ids = None, to_color = None):
+    import networkx as nx
+    from matplotlib import pyplot as plt
+
+    if block_ids is None:
+        block_ids = dag.block_ids()
+
+    block_ids = set(block_ids)
+    levels = {block_id: 0 for block_id in block_ids if not dag.parents_of(block_id)}
+
+    curr_level = set(levels.keys())
+    next_level = set()
+    level = 1
+    while True:
+        next_level = set()
+        for block_id in curr_level:
+            next_level.update(dag.children_of(block_id))
+        next_level = next_level & block_ids
+        if not next_level: break
+        for block_id in next_level:
+            levels[block_id] = level
+        level += 1
+        curr_level = next_level
+
+    level_cnt = [0] * level
+    for block_level in levels.values():
+        level_cnt[block_level] += 1
+    max_per_level = max(level_cnt)
+
+    level_cnt_curr = [0] * level
+    pos_dict = {}
+    G = nx.DiGraph()
+    for block_id, block_level in levels.items():
+        x = level_cnt_curr[block_level] + (max_per_level - level_cnt[block_level] ) * 0.5
+        level_cnt_curr[block_level] += 1
+        y = levels[block_id] * -2
+        pos_dict[block_id] = (x,y)
+        G.add_edges_from([(parent, block_id) for parent in dag.parents_of(block_id)])
+
+    nx.draw(G, pos = pos_dict, with_labels = True, node_size=1000, node_color='lightgrey', node_shape='s', edge_color='grey')
+    if to_color is not None :
+        G_color = G.subgraph(to_color)
+        nx.draw(G_color, pos = pos_dict, with_labels = True, node_size=1000, node_color='lightskyblue', node_shape='s', edge_color='cornflowerblue')
+    plt.show()

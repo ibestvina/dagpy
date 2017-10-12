@@ -128,4 +128,3 @@ class FlowManager:
 
         for block_id, block_cells in blocks_to_save.items():
             blockio.save_block(block_id, block_cells, self._dag)
-
