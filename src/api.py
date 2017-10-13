@@ -16,7 +16,7 @@ def open_notebook(nbfile):
 
     print('Running {}'.format(nbfile))
     command = 'jupyter notebook ' + nbfile
-    subprocess.Popen(command.split())
+    subprocess.check_output(command.split())
 
 
 def create_flow(dag_fpathname, block_ids, flow_name, run=False):
