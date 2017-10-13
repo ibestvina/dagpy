@@ -4,7 +4,7 @@ import json
 
 class DAG:
 
-    block_attributes = ['block_id', 'parents', 'description', 'file', 'filter']
+    block_attributes = ['parents', 'description', 'file', 'filter']
 
     def __init__(self, dag_dict):
         self._dag_dict = dag_dict
@@ -15,6 +15,17 @@ class DAG:
         for block_id, block in self._dag_dict['blocks'].items():
             self._parents[block_id] = block['parents']
         self._children = utils.invert_dict(self._parents)
+
+    def _remove_redundant_parents(self):
+        for block_id, block in self._dag_dict['blocks'].items():
+            parents = set(block['parents'])
+            dep_parents = set()
+            for parent in parents:
+                deps = set(utils.all_dependencies(self, parent))
+                deps.remove(parent)
+                dep_parents.update(deps)
+            parents -= dep_parents
+            self._dag_dict['blocks'][block_id]['parents'] = list(parents)
 
     def block_ids(self):
         return self._dag_dict['blocks']
@@ -50,15 +61,35 @@ class DAG:
         return self._children[block_id]
 
     def add_block(self, block_id, block):
-        self._dag_dict['blocks']['block_id'] = block
+        self._dag_dict['blocks'][block_id] = block
         self._reset_parents_and_children()
 
+    def add_or_update_block(self, block_id, block):
+        if block_id in self.block_ids:
+            block['block_id'] = block_id
+            self.update_block(block)
+            return False
+        else:
+            self.add_block(block_id, block)
+            return True
+
+    def add_parents(self, block_id, parents, recalculate_support = True):
+        parents = self._dag_dict['blocks'][block_id]['parents'] + parents
+        self._dag_dict['blocks'][block_id]['parents'] = list(set(parents))
+        if recalculate_support:
+            self._reset_parents_and_children()
+
     def remove_block(self, block_id):
-        block = self._dag_dict['blocks'][block_id]
+        parents = self.parents_of(block_id)
+        for child in self.children_of(block_id):
+            self.add_parents(child, parents, recalculate_support = False)
+            self._dag_dict['blocks'][child]['parents'].remove(block_id)
+        del(self._dag_dict['blocks'][block_id])
+        self._remove_redundant_parents()
         self._reset_parents_and_children()
 
     def set_parents(self, block_id, parents):
-        self._dag_dict['blocks']['parents'] = parents
+        self._dag_dict['blocks'][block_id]['parents'] = parents
         self._reset_parents_and_children()
 
     def block_filename(self, block_id):
@@ -75,7 +106,8 @@ class DAG:
     def update_block(self, block_meta, recalculate_support = True):
         block_id = block_meta['block_id']
         for block_att in DAG.block_attributes:
-            self._dag_dict['blocks'][block_id][block_att] = block_meta[block_att]
+            if block_att in block_meta:
+                self._dag_dict['blocks'][block_id][block_att] = block_meta[block_att]
         if recalculate_support:
             self._reset_parents_and_children()
 
@@ -83,4 +115,9 @@ class DAG:
     @staticmethod
     def from_file(fpathname):
         dag_dict = json.load(open(fpathname))
+        return DAG(dag_dict)
+
+    @staticmethod
+    def empty(name):
+        dag_dict = {'id': name, 'blocks': {}}
         return DAG(dag_dict)

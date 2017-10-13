@@ -21,16 +21,6 @@
         {
             "parents": ["B", "C"],
             "file": "playground/D.ipynb"
-        },
-        "E":
-        {
-            "parents": ["C"],
-            "file": "playground/D.ipynb"
-        },
-        "F":
-        {
-            "parents": ["C", "A"],
-            "file": "playground/D.ipynb"
         }
      }
 }

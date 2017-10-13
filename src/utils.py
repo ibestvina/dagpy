@@ -1,13 +1,15 @@
 import subprocess
 import time
 import json
+import os
 
 # save dict to file as json if it was changed and return True. If unchanged, return False
 def dict_to_json_file(d, fpath):
-    fd = json.load(open(fpath))
-    if d == fd:
-        return False
-    json.dump(d, open(fpath, 'w'))
+    if os.path.isfile(fpath):
+        fd = json.load(open(fpath))
+        if d == fd:
+            return False
+    json.dump(d, open(fpath, 'w+'), indent=4)
     return True
 
 def invert_dict(d):
@@ -15,7 +17,7 @@ def invert_dict(d):
     return dict((new_key, [key for key,value in d.items() if new_key in value]) for new_key in values)
 
 
-class Console_executor:
+class ConsoleExecutor:
     def __init__(self):
         self._running_procs = []
 

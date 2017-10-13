@@ -37,8 +37,8 @@ class FlowManager:
         return new_markdown_cell(source=source, metadata={'dagpy': {'cell_type': blockio.DELIMITER_CELL_TYPE, 'block_id': block_id}})
 
     def _create_notebook(self):
-        title_cell = new_markdown_cell(source='## DAGpy Flow notebook', metadata={'dagpy': {'cell_type': blockio.TITLE_CELL_TYPE}})
-        return new_notebook(cells=[title_cell, self._header_cell()])
+        title_cell = new_markdown_cell(source='## DAGpy Flow notebook\nIf you want to start a new block, just run the start_new_dagpy_block() in the cell!', metadata={'dagpy': {'cell_type': blockio.TITLE_CELL_TYPE}})
+        return new_notebook(cells=[self._header_cell(), title_cell])
 
     def merge_blocks(self, block_ids):
         merged = self._create_notebook()

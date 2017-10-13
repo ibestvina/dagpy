@@ -1,0 +1,26 @@
+{
+    "id": "x",
+    "blocks":
+     {
+        "A":
+        {
+            "parents": [],
+            "file": "playground/A.ipynb"
+        },
+        "B":
+        {
+            "parents": ["A"],
+            "file": "playground/B.ipynb"
+        },
+        "C":
+        {
+            "parents": ["A"],
+            "file": "playground/C.ipynb"
+        },
+        "D":
+        {
+            "parents": ["B", "C"],
+            "file": "playground/D.ipynb"
+        }
+     }
+}

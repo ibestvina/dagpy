@@ -16,6 +16,9 @@ def filter_file(var_name, block_id, dag):
     fname = '{}_{}.dill'.format(str(block_id), str(var_name))
     return os.path.join('cache', fname)
 
+def placeholder_cell():
+    new_code_cell(source='# Hi, this is an empty DAGpy block. Add your cells here!\n')
+
 
 def filter_input_cell(block_id, dag):
     source_str = '# DAGpy input filter\nimport dill'
@@ -42,6 +45,8 @@ def save_block(block_id, block_cells, dag):
     nb = new_notebook()
     nb.metadata['dagpy'] = {}
     nb.metadata['dagpy']['block_id'] = block_id
+    if not block_cells:
+        block_cells = [placeholder_cell()]
     nb.cells = [filter_input_cell(block_id, dag)] + block_cells + [filter_output_cell(block_id, dag)]
     fpathname = dag.get_block_att(block_id, 'file', default = '{!s}.ipynb'.format(block_id))
     nbformat.write(nb, fpathname)

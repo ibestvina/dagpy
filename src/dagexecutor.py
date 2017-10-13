@@ -7,7 +7,7 @@ class DAGExecutor:
     def __init__(self, dag, path):
         self._dag = dag
         self._path = path
-        self._cex = utils.Console_executor()
+        self._cex = utils.ConsoleExecutor()
 
     def _run_ipynb_command(self, block_id):
         #filename = utils.block_filename(self._dag.get_id(), block_id)
@@ -23,7 +23,7 @@ class DAGExecutor:
     def execute_blocks(self, block_ids):
         pending_to_execute = utils.all_dependencies(self._dag, block_ids)
         pending_parents_cnt = {block_id: len(self._dag.parents_of(block_id)) for block_id in pending_to_execute}
-        block_cnt = self._dag.block_cnt()
+        block_cnt = len(pending_to_execute)
 
         while pending_to_execute or self._cex.run_cnt():
             print('Executed {}/{} blocks'.format(block_cnt - len(pending_to_execute), block_cnt))
@@ -35,7 +35,8 @@ class DAGExecutor:
             if self._cex.run_cnt():
                 retval = self._cex.blocking_poll(0.1)
                 if retval['retcode'] != 0:
-                    print('Error executing block', retval['proc_id'])
+                    print('Error executing block {}, retcode: {}'.format(retval['proc_id'], retval['retcode']))
                     print('Execution output:\n', retval['output'].read())
+                    print('\n')
                 for child_id in self._dag.children_of(retval['proc_id']):
                     if child_id in pending_parents_cnt: pending_parents_cnt[child_id] -= 1
