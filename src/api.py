@@ -11,10 +11,11 @@ def execute_blocks(dag_fpathname, block_ids, all=False):
 
     d = dag.DAG.from_file(dag_fpathname)
     if all: block_ids = d.block_ids()
-    nonexistent = set(block_ids) - set(d.block_ids())
-    elif nonexistent:
-        print('Block(s) {} have not been found.'.format(nonexistent))
-        return
+    else:
+        nonexistent = set(block_ids) - set(d.block_ids())
+        if nonexistent:
+            print('Block(s) {} have not been found.'.format(nonexistent))
+            return
     dex = dagexecutor.DAGExecutor(d, dag_fpathname)
     dex.execute_blocks(block_ids)
 
