@@ -21,8 +21,8 @@ To play around with the example project, you can:
  - add blocks through flows (with block B as a parent) and run them automatically:  `python program.py lf B -r`
  - commit the changes: `python program.py cf dagpy_flow.ipynb`
  - explore other DAGpy options with  `python program.py -h`
- 
- 
+   
+   
  Dependencies:
   - jupyter
   - dill
