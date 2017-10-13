@@ -1,11 +1,20 @@
 
 
+def check_blocks(dag, block_ids):
+    if set(block_ids) - set(dag.block_ids()):
+        return False
+    return True
+
 def execute_blocks(dag_fpathname, block_ids, all=False):
     import dag
     import dagexecutor
 
     d = dag.DAG.from_file(dag_fpathname)
     if all: block_ids = d.block_ids()
+    nonexistent = set(block_ids) - set(d.block_ids())
+    elif nonexistent:
+        print('Block(s) {} have not been found.'.format(nonexistent))
+        return
     dex = dagexecutor.DAGExecutor(d, dag_fpathname)
     dex.execute_blocks(block_ids)
 
@@ -92,6 +101,9 @@ def update_block(dag_fpathname, block_id, block):
 
     block['block_id'] = block_id
     d = dag.DAG.from_file(dag_fpathname)
+    if block_id not in d.block_ids():
+        print('Block {} was not found.'.format(block_id))
+        return
     d.update_block(block)
     blockio.save_block(block_id, [], d)
 
@@ -101,5 +113,8 @@ def remove_block(dag_fpathname, block_id):
     import blockio
 
     d = dag.DAG.from_file(dag_fpathname)
+    if block_id not in d.block_ids():
+        print('Block {} was not found.'.format(block_id))
+        return
     d.remove_block(block_id)
     d.to_file(dag_fpathname)
