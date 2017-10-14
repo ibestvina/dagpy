@@ -6,7 +6,7 @@ class DAGExecutor:
 
     def __init__(self, dag, path):
         self._dag = dag
-        self._path = path
+        self._path = os.path.dirname(path)
         self._cex = utils.ConsoleExecutor()
 
     def _run_ipynb_command(self, block_id):
@@ -38,5 +38,6 @@ class DAGExecutor:
                     print('Error executing block {}, retcode: {}'.format(retval['proc_id'], retval['retcode']))
                     print('Execution output:\n', retval['output'].read())
                     print('\n')
+                    return
                 for child_id in self._dag.children_of(retval['proc_id']):
                     if child_id in pending_parents_cnt: pending_parents_cnt[child_id] -= 1

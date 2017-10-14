@@ -5,12 +5,12 @@ def check_blocks(dag, block_ids):
         return False
     return True
 
-def execute_blocks(dag_fpathname, block_ids, all=False):
+def execute_blocks(dag_fpathname, block_ids, exec_all=False):
     import dag
     import dagexecutor
 
     d = dag.DAG.from_file(dag_fpathname)
-    if all: block_ids = d.block_ids()
+    if exec_all: block_ids = d.block_ids()
     else:
         nonexistent = set(block_ids) - set(d.block_ids())
         if nonexistent:

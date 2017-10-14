@@ -40,7 +40,7 @@ class ConsoleExecutor:
     def blocking_poll(self, time_step=0.1):
         retval = self.poll()
         while retval is None:
-            print('waiting')
+            # print('waiting')
             time.sleep(time_step)
             retval = self.poll()
         return retval

@@ -1,26 +1,38 @@
 {
     "id": "x",
-    "blocks":
-     {
-        "A":
-        {
+    "blocks": {
+        "A": {
+            "description": "",
+            "filter": [
+                "y"
+            ],
             "parents": [],
             "file": "playground/A.ipynb"
         },
-        "B":
-        {
-            "parents": ["A"],
+        "B": {
+            "description": "",
+            "filter": [],
+            "parents": [
+                "A"
+            ],
             "file": "playground/B.ipynb"
         },
-        "C":
-        {
-            "parents": ["A"],
+        "C": {
+            "description": "",
+            "parents": [
+                "A"
+            ],
+            "filter": [],
             "file": "playground/C.ipynb"
         },
-        "D":
-        {
-            "parents": ["B", "C"],
+        "D": {
+            "description": "",
+            "parents": [
+                "B",
+                "C"
+            ],
+            "filter": [],
             "file": "playground/D.ipynb"
         }
-     }
+    }
 }

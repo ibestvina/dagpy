@@ -13,8 +13,8 @@ HEADER_CELL_TYPE = 'header'
 
 
 def filter_file(var_name, block_id, dag):
-    fname = '{}_{}.dill'.format(str(block_id), str(var_name))
-    return os.path.join('cache', fname)
+    return 'cache/{}_{}.dill'.format(str(block_id), str(var_name))
+    #return os.path.join('cache', fname)
 
 def placeholder_cell():
     new_code_cell(source='# Hi, this is an empty DAGpy block. Add your cells here!\n')
@@ -28,7 +28,7 @@ def filter_input_cell(block_id, dag):
         for var_name in pfilter:
             inblock_var_name = '{!s}_{!s}'.format(parent, var_name)
             fpathname = filter_file(var_name, parent, dag)
-            source_str += "\n{} = dill.load('{!s}')".format(inblock_var_name, fpathname)
+            source_str += "\n{} = dill.load(open('{!s}','rb'))".format(inblock_var_name, fpathname)
     return new_code_cell(source=source_str, metadata={'dagpy':{'cell_type': INPUT_FILTER_CELL_TYPE}})
 
 def filter_output_cell(block_id, dag):
@@ -37,7 +37,7 @@ def filter_output_cell(block_id, dag):
     for var_name in block_filter:
         fpathname = filter_file(var_name, block_id, dag)
         source_str += "\nos.makedirs(os.path.dirname('{!s}'), exist_ok=True)".format(fpathname)
-        source_str += "\ndill.dump({}, open('{!s}', 'wb'))".format(var_name, fpathname)
+        source_str += "\ndill.dump({}, open('{!s}', 'wb+'))".format(var_name, fpathname)
     return new_code_cell(source=source_str, metadata={'dagpy':{'cell_type': OUTPUT_FILTER_CELL_TYPE}})
 
 

@@ -37,13 +37,13 @@ def run_view(args):
 def run_exec(args):
     if args.exec_all: print('Executing all blocks.\n\n')
     else: print('Executing blocks: {} and all their dependencies.\n\n'.format(', '.join(args.blocks)))
-    api.execute_blocks(args.dag_fpathname, args.blocks, all=args.exec_all)
+    api.execute_blocks(args.dag_fpathname, args.blocks, exec_all=args.exec_all)
 
-def run_loadflow(args):
-    print('Loading flow {} for blocks: {}'.format(args.flow_name, ', '.join(args.blocks)))
+def run_makeflow(args):
+    print('Making flow {} for blocks: {}'.format(args.flow_name, ', '.join(args.blocks)))
     api.create_flow(args.dag_fpathname, args.blocks, args.flow_name, run=args.run)
 
-def run_commitflow(args):
+def run_submitflow(args):
     print('Commiting flow from {}'.format(args.flow_notebook))
     api.update_from_flow(args.dag_fpathname, args.flow_notebook)
 
@@ -74,17 +74,17 @@ parser_exec.add_argument('-a', '--all', dest='exec_all', action='store_true', he
 parser_exec.add_argument('-d', '--dag', dest='dag_fpathname', help='DAG file', default='', metavar='FILE', type=lambda x: is_valid_file(parser_exec, x))
 parser_exec.set_defaults(func=run_exec)
 
-parser_loadflow = subparsers.add_parser('loadflow', help='Create the flow', aliases=['lf'])
-parser_loadflow.add_argument('blocks', nargs='+', help='blocks from which to create the flow', metavar='BLOCKS')
-parser_loadflow.add_argument('-d', '--dag', dest='dag_fpathname', help='DAG file', default='', metavar='FILE', type=lambda x: is_valid_file(parser_exec, x))
-parser_loadflow.add_argument('-n', '--name', dest='flow_name', help="name of the flow (default 'dagpy_flow')", default='dagpy_flow', metavar='NAME')
-parser_loadflow.add_argument('-r', '--run', dest='run', action='store_true', help='run the flow notebook',)
-parser_loadflow.set_defaults(func=run_loadflow)
+parser_makeflow = subparsers.add_parser('makeflow', help='Make a new flow', aliases=['mf'])
+parser_makeflow.add_argument('blocks', nargs='+', help='blocks from which to create the flow', metavar='BLOCKS')
+parser_makeflow.add_argument('-d', '--dag', dest='dag_fpathname', help='DAG file', default='', metavar='FILE', type=lambda x: is_valid_file(parser_exec, x))
+parser_makeflow.add_argument('-n', '--name', dest='flow_name', help="name of the flow (default 'dagpy_flow')", default='dagpy_flow', metavar='NAME')
+parser_makeflow.add_argument('-r', '--run', dest='run', action='store_true', help='run the flow notebook',)
+parser_makeflow.set_defaults(func=run_makeflow)
 
-parser_commitflow = subparsers.add_parser('commitflow', help='Commit the flow', aliases=['cf'])
-parser_commitflow.add_argument('flow_notebook', help='flow notebook from which to update DAG', type=lambda x: is_valid_file(parser_exec, x))
-parser_commitflow.add_argument('-d', '--dag', dest='dag_fpathname', help='DAG file', default='', metavar='FILE', type=lambda x: is_valid_file(parser_exec, x))
-parser_commitflow.set_defaults(func=run_commitflow)
+parser_submitflow = subparsers.add_parser('submitflow', help='Submit the flow', aliases=['sf'])
+parser_submitflow.add_argument('flow_notebook', help='flow notebook from which to update the DAG', type=lambda x: is_valid_file(parser_exec, x))
+parser_submitflow.add_argument('-d', '--dag', dest='dag_fpathname', help='DAG file', default='', metavar='FILE', type=lambda x: is_valid_file(parser_exec, x))
+parser_submitflow.set_defaults(func=run_submitflow)
 
 parser_blockrm = subparsers.add_parser('remove', help='Remove block', aliases=['rm'])
 parser_blockrm.add_argument('block', help='block to remove')
