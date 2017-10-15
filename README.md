@@ -24,6 +24,7 @@ To play around with the example project, you can:
    
    
  Dependencies:
+  - python 3
   - jupyter
   - dill
   - networkx, matplotlib (for DAG view)
