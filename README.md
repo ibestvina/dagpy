@@ -17,9 +17,9 @@ Author: Ivan Bestvina
 ## Example project
 To play around with the example project, you can:
  - view the project DAG: `python program.py view`
- - run all the blocks: `python program.py exe -a`
- - add blocks through flows (with block B as a parent) and run them automatically:  `python program.py lf B -r`
- - commit the changes: `python program.py cf dagpy_flow.ipynb`
+ - run all the blocks: `python program.py execute -a`
+ - add blocks through flows (with block B as a parent) and run them automatically:  `python program.py makeflow B -r`
+ - commit the changes: `python program.py submitflow dagpy_flow.ipynb`
  - explore other DAGpy options with  `python program.py -h`
    
    
