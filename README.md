@@ -9,7 +9,7 @@ DAGpy is a data science collaboration tool based on iPython notebooks enabling d
 
 DAGpy manages a DAG (directed acyclic graph) of blocks of code, with each block being a sequence of iPython notebook cells, together with their outputs. It is designed to work seamlessly with popular VC systems like git and can be run locally or as a server application.
 
-To learn more about DAGpy read the [Project overview](docs/project_overview.md). Please note that this is a work in progress, and is not yet available as a py package.
+To learn more about DAGpy read the [Project overview](docs/project_overview.md). This is a work in progress, and is not yet available as a python package, nor are binaries available for download.
 
 Author: Ivan Bestvina
 
