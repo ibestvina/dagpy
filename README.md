@@ -21,6 +21,8 @@ To play around with the example project, you can:
  - add blocks through flows (with block B as a parent) and run them automatically:  `python program.py makeflow B -r`
  - commit the changes: `python program.py submitflow dagpy_flow.ipynb`
  - explore other DAGpy options with  `python program.py -h`
+ 
+Please note that notebook execution time includes a significant overhead of over a second, because a kernel must be started for each one. In future, we plan on adding support for non-notebook plane python blocks. These would also be edited through a flow notebook view, but would be saved as .py scripts, and executed without noticable overhead.  
    
    
  Dependencies:
