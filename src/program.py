@@ -36,7 +36,7 @@ def run_create(args):
 
 def run_view(args):
     """dagpy view"""
-    print('Displaying DAG from {}'.format(args.dag_fpathname))
+    print('Displaying DAG from {}. Please wait while the visualization framework is initialized.'.format(args.dag_fpathname))
     api.display_dag(args.dag_fpathname, flow = args.blocks)
 
 def run_exec(args):
