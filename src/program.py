@@ -7,7 +7,7 @@ this_filename = 'program.py'
 parsing_errors = False
 
 def is_valid_file(parser, arg):
-    '''Check if the file exists and return its path. Otherwise raise error.'''
+    """Check if the file exists and return its path. Otherwise raise error."""
     if not arg: return arg
     if not os.path.exists(arg):
         parser.error("The file %s does not exist!" % arg)
@@ -15,7 +15,7 @@ def is_valid_file(parser, arg):
         return arg
 
 def default_dagfile():
-    '''Get default DAG file path: the first *.dagpy file in the current folder.'''
+    """Get default DAG file path: the first *.dagpy file in the current folder."""
     global parsing_errors
     for file in os.listdir('./'):
         if file.endswith('.dagpy'):
@@ -26,37 +26,37 @@ def default_dagfile():
 
 
 def run_default(args):
-    '''Running the script without any args.'''
+    """Running the script without any args."""
     print('Run {} -h for help.'.format(this_filename))
 
 def run_create(args):
-    '''dagpy create'''
+    """dagpy create"""
     print('Creating new project: {}'.format(args.name))
     api.new_project(args.name, args.run)
 
 def run_view(args):
-    '''dagpy view'''
+    """dagpy view"""
     print('Displaying DAG from {}'.format(args.dag_fpathname))
     api.display_dag(args.dag_fpathname, flow = args.blocks)
 
 def run_exec(args):
-    '''dagpy execute'''
+    """dagpy execute"""
     if args.exec_all: print('Executing all blocks.\n\n')
     else: print('Executing blocks: {} and all their dependencies.\n\n'.format(', '.join(args.blocks)))
     api.execute_blocks(args.dag_fpathname, args.blocks, exec_all=args.exec_all)
 
 def run_makeflow(args):
-    '''dagpy makeflow'''
+    """dagpy makeflow"""
     print('Making flow {} for blocks: {}'.format(args.flow_name, ', '.join(args.blocks)))
     api.create_flow(args.dag_fpathname, args.blocks, args.flow_name, run=args.run)
 
 def run_submitflow(args):
-    '''dagpy submitflow'''
+    """dagpy submitflow"""
     print('Commiting flow from {}'.format(args.flow_notebook))
     api.update_from_flow(args.dag_fpathname, args.flow_notebook)
 
 def run_blockrm(args):
-    '''dagpy remove'''
+    """dagpy remove"""
     print('Removing block {} from {}'.format(args.block, args.dag_fpathname))
     api.remove_block(args.dag_fpathname, args.block)
 
