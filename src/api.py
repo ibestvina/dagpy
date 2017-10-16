@@ -8,7 +8,6 @@ def check_blocks(dag, block_ids):
 
 def execute_blocks(dag_fpathname, block_ids, exec_all=False):
     """Execute blocks passed and all their dependencies"""
-    # TODO: check for changes and execute only what needs updating
     import dag
     import dagexecutor
 
