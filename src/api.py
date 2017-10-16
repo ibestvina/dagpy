@@ -1,11 +1,14 @@
 
 
 def check_blocks(dag, block_ids):
+    """Check if all blocks exist"""
     if set(block_ids) - set(dag.block_ids()):
         return False
     return True
 
 def execute_blocks(dag_fpathname, block_ids, exec_all=False):
+    """Execute blocks passed and all their dependencies"""
+    # TODO: check for changes and execute only what needs updating
     import dag
     import dagexecutor
 
@@ -21,6 +24,7 @@ def execute_blocks(dag_fpathname, block_ids, exec_all=False):
 
 
 def open_notebook(nbfile):
+    """Start the server and run the notebook in the user's prefered browser"""
     from utils import ConsoleExecutor
     import subprocess
 
@@ -30,6 +34,7 @@ def open_notebook(nbfile):
 
 
 def create_flow(dag_fpathname, block_ids, flow_name, run=False):
+    """Create the flow of passed blocks and their dependencies, and open it if run=True"""
     import dag
     import flowmanager
     import os
@@ -43,6 +48,7 @@ def create_flow(dag_fpathname, block_ids, flow_name, run=False):
 
 
 def update_from_flow(dag_fpathname, flow_fpathname):
+    """Update block files and the DAG with the changes made in the flow."""
     import dag
     import flowmanager
 
@@ -53,6 +59,7 @@ def update_from_flow(dag_fpathname, flow_fpathname):
 
 
 def new_project(project_name, run=False):
+    """Create a new project (empty .dagpy file)."""
     import dag
     from utils import ConsoleExecutor
 
@@ -66,6 +73,7 @@ def new_project(project_name, run=False):
         
 
 def display_dag(dag_fpathname, flow = None):
+    """Display the DAG in a new window (non-interactive)."""
     import dag
     import utils
 
@@ -77,6 +85,7 @@ def display_dag(dag_fpathname, flow = None):
 
 
 def add_or_update_block(dag_fpathname, block_id, block):
+    """Add a new block or update if already exists."""
     import dag
     import blockio
 
@@ -87,6 +96,7 @@ def add_or_update_block(dag_fpathname, block_id, block):
 
 
 def add_block(dag_fpathname, block_id, block):
+    """Add a new block, overwrite if already exists."""
     import dag
     import blockio
 
@@ -97,6 +107,7 @@ def add_block(dag_fpathname, block_id, block):
 
 
 def update_block(dag_fpathname, block_id, block):
+    """Update block, do nothing if it doesn't exist."""
     import dag
     import blockio
 
@@ -110,6 +121,7 @@ def update_block(dag_fpathname, block_id, block):
 
 
 def remove_block(dag_fpathname, block_id):
+    """Remove the block from the DAG, but keep the block file."""
     import dag
     import blockio
 
