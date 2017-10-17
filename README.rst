@@ -17,16 +17,17 @@ like git and can be run locally or as a server application.
 
 Author: Ivan Bestvina
 
+
 Example project
 ---------------
 
 To play around with the example project, you can:
 
-- view the project DAG: ``python program.py view`` 
-- run all the blocks: ``python program.py execute -a`` 
-- add blocks through flows (with block B as a parent) and run them automatically: ``python program.py makeflow B -r`` 
-- commit the changes: ``python program.py submitflow dagpy_flow.ipynb`` 
-- explore other DAGpy options with ``python program.py -h``
+- view the project DAG: ``dagpy view``
+- run all the blocks: ``dagpy execute -a``
+- add blocks through flows (with block B as a parent) and run them automatically: ``dagpy makeflow B -r``
+- commit the changes: ``dagpy submitflow dagpy_flow.ipynb``
+- explore other DAGpy options with  ``dagpy -h``
 
 Please note that notebook execution time includes a significant overhead
 of over a second, because a kernel must be started for each one. In

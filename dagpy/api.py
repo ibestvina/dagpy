@@ -8,8 +8,8 @@ def check_blocks(dag, block_ids):
 
 def execute_blocks(dag_fpathname, block_ids, exec_all=False):
     """Execute blocks passed and all their dependencies"""
-    import dag
-    import dagexecutor
+    from . import dag
+    from . import dagexecutor
 
     d = dag.DAG.from_file(dag_fpathname)
     if exec_all: block_ids = d.block_ids()
@@ -24,7 +24,7 @@ def execute_blocks(dag_fpathname, block_ids, exec_all=False):
 
 def open_notebook(nbfile):
     """Start the server and run the notebook in the user's prefered browser"""
-    from utils import ConsoleExecutor
+    from .utils import ConsoleExecutor
     import subprocess
 
     print('Running {}'.format(nbfile))
@@ -34,8 +34,8 @@ def open_notebook(nbfile):
 
 def create_flow(dag_fpathname, block_ids, flow_name, run=False):
     """Create the flow of passed blocks and their dependencies, and open it if run=True"""
-    import dag
-    import flowmanager
+    from . import dag
+    from . import flowmanager
     import os
 
     d = dag.DAG.from_file(dag_fpathname)
@@ -48,8 +48,8 @@ def create_flow(dag_fpathname, block_ids, flow_name, run=False):
 
 def update_from_flow(dag_fpathname, flow_fpathname):
     """Update block files and the DAG with the changes made in the flow."""
-    import dag
-    import flowmanager
+    from . import dag
+    from . import flowmanager
 
     d = dag.DAG.from_file(dag_fpathname)
     flow = flowmanager.FlowManager(d, dag_fpathname)
@@ -59,8 +59,8 @@ def update_from_flow(dag_fpathname, flow_fpathname):
 
 def new_project(project_name, run=False):
     """Create a new project (empty .dagpy file)."""
-    import dag
-    from utils import ConsoleExecutor
+    from . import dag
+    from .utils import ConsoleExecutor
 
     d = dag.DAG.empty(project_name)
     dag_fpathname = project_name+'.dagpy'
@@ -73,8 +73,8 @@ def new_project(project_name, run=False):
 
 def display_dag(dag_fpathname, flow = None):
     """Display the DAG in a new window (non-interactive)."""
-    import dag
-    import utils
+    from . import dag
+    from . import utils
 
     d = dag.DAG.from_file(dag_fpathname)
     to_color = []
@@ -85,8 +85,8 @@ def display_dag(dag_fpathname, flow = None):
 
 def add_or_update_block(dag_fpathname, block_id, block):
     """Add a new block or update if already exists."""
-    import dag
-    import blockio
+    from . import dag
+    from . import blockio
 
     d = dag.DAG.from_file(dag_fpathname)
     is_new = d.add_or_update_block(block_id, block)
@@ -107,8 +107,8 @@ def add_block(dag_fpathname, block_id, block):
 
 def update_block(dag_fpathname, block_id, block):
     """Update block, do nothing if it doesn't exist."""
-    import dag
-    import blockio
+    from . import dag
+    from . import blockio
 
     block['block_id'] = block_id
     d = dag.DAG.from_file(dag_fpathname)

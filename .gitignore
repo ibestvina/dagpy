@@ -1,4 +1,17 @@
 # pycharm
-src/.idea/
-src/__pycache__
+dagpy/.idea/
+dagpy/__pycache__
 *.ipynb_checkpoints*
+
+# Compiled python modules.
+*.pyc
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+# build
+/dagpy.egg-info/
+/build/

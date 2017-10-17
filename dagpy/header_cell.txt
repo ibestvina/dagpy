@@ -1,4 +1,6 @@
-"""Run this cell to add the start_new_dagpy_block to you namespace. Call it from any cell to start a new block there."""
+# Run this cell to add the start_new_dagpy_block to you namespace.
+# Call it from any cell to start a new block there.
+
 from IPython.display import display_javascript
 def start_new_dagpy_block():
     header_code = """### Block_id\\n\\n##### Description\\n\\n##### Parents\\n\\n##### Filter\\n\\n##### File\\n"""

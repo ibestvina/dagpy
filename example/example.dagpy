@@ -1,0 +1,42 @@
+{
+    "blocks": {
+        "A": {
+            "filter": [
+                "var_a"
+            ],
+            "parents": [],
+            "file": "A.ipynb",
+            "description": "This is the description of the block A."
+        },
+        "B": {
+            "filter": [
+                "var_b"
+            ],
+            "parents": [
+                "A"
+            ],
+            "file": "B.ipynb",
+            "description": "This is the description of the block A."
+        },
+        "D": {
+            "filter": [],
+            "parents": [
+                "B",
+                "C"
+            ],
+            "file": "D.ipynb",
+            "description": "This is the description of the block D."
+        },
+        "C": {
+            "filter": [
+                "var_c"
+            ],
+            "parents": [
+                "A"
+            ],
+            "file": "C.ipynb",
+            "description": "This is the description of the block C."
+        }
+    },
+    "id": "x"
+}

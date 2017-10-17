@@ -1,9 +1,11 @@
-import utils
-import blockio
+from . import utils
+from . import blockio
+from . import dag
 
-import dag
+from pkg_resources import resource_string
 import os
 import re
+
 
 import nbformat
 from nbformat.v4 import new_markdown_cell, new_code_cell, new_notebook
@@ -30,9 +32,10 @@ class FlowManager:
 
     def _header_cell(self):
         """Create the header cell with custom DAGpy code, such as the start_new_dagpy_block function.
-        Header cell is loaded from the header_cell.py file.
+        Header cell is loaded from the header_cell.txt file.
         """
-        source = open("header_cell.py").read()
+        source = resource_string(__name__, 'header_cell.txt').decode('UTF-8')
+        #source = open('dagpy/header_cell.txt', 'r').read()
         return new_code_cell(source = source, metadata = {'dagpy': {'cell_type': blockio.HEADER_CELL_TYPE}})
 
     def _delimiter_cell(self, block_id):
